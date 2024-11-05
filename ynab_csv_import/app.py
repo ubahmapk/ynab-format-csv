@@ -1,9 +1,11 @@
+from dataclasses import Field, dataclass
+from pathlib import Path
+from sys import stderr
+
 import click
 import pandas as pd
 from loguru import logger
-from dataclasses import Field, dataclass
-from sys import stderr
-from pathlib import Path
+
 from ynab_csv_import.__version__ import __version__
 
 
