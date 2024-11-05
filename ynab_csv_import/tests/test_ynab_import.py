@@ -2,16 +2,10 @@ import pytest
 
 from ynab_csv_import.app import choose_field
 
+
 def test_choose_field() -> None:
 
-    header_fields = [
-        "Date",
-        "Payee",
-        "Category",
-        "Memo",
-        "Outflow",
-        "Inflow"
-    ]
+    header_fields = ["Date", "Payee", "Category", "Memo", "Outflow", "Inflow"]
 
     assert choose_field("Date", header_fields) == "Date"
     assert choose_field("Payee", header_fields) == "Payee"
