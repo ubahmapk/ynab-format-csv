@@ -130,7 +130,7 @@ def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.
 def write_dataframe_to_csv_file(df: pd.DataFrame, file_path: Path) -> None:
     """Write the DataFrame to a CSV file"""
 
-    df.to_csv(file_path, index=False)
+    df.to_csv(file_path, float_format="%.2f", index=False)
     print(f"Updated data written to {file_path}")
     print()
 
