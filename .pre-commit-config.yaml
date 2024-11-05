@@ -32,4 +32,4 @@ repos:
     rev: '1.7.10' # Update me!
     hooks:
     - id: bandit
-      exclude: '^drawnames/tests/'
+      exclude: '^ynab_csv_import/tests/'
