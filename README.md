@@ -14,7 +14,7 @@ YNAB requires the CSV file to include the following header fields in this order:
 
 ### Example data - Format 1
 
-| Date       | Payee   | Memo | Outflow | Inflow | 
+| Date       | Payee   | Memo | Outflow | Inflow |
 | ---------- | ------- | ---- | ------- | ------ |
 | 06/22/2021 | Payee 1 | Memo |  100.00 |        |
 | 06/23/2021 | Payee 2 | Memo |         | 500.00 |
