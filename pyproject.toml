@@ -47,6 +47,7 @@ profile = "black"
 line_length = 120
 
 [tool.ruff]
+exclude = ["ynab_csv_import/tests/"]
 line-length = 120
 target-version = "py310"
 lint.select = [
@@ -67,4 +68,3 @@ lint.select = [
     "YTT", # Flake8-2020
 ]
 lint.ignore = ["RET501", "F541"]
-lint.exclude = ["ynab_csv_import/tests/"]
