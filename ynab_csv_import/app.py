@@ -50,24 +50,6 @@ def set_logging_level(verbosity: int) -> None:
     return None
 
 
-def read_csv_header_fields(df: pd.DataFrame) -> list:
-    """
-    Read the header fields from the CSV file.
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        The CSV file contents as a DataFrame.
-
-    Returns
-    -------
-    list
-        A list of column names from the DataFrame.
-    """
-
-    return df.columns.tolist()
-
-
 def generate_ynab_header_fields() -> list[FieldMapping]:
     """
     Generate and return the list of YNAB header fields.
@@ -136,11 +118,12 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
     print()
     while True:
         # Loop through the ynab_header_fields and select a header field from the CSV file to map
-        prompt_text = f"Which field should be used as the {field_name} field?\n\n"
+        prompt_text = f"\nWhich field should be used as the {field_name} field?\n\n"
         prompt_text += f"0. Skip {field_name} field\n"
         for i, header_field in enumerate(csv_header_fields):
             prompt_text += f"{i+1}. {header_field}\n"
 
+        prompt_text += "\n"
         choice = click.prompt(prompt_text, type=int)
 
         if choice > len(csv_header_fields):
@@ -269,7 +252,7 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
     df = read_csv_transaction_file(csv_file)
 
     # Read the header fields
-    header_fields = read_csv_header_fields(df)
+    header_fields = df.columns.tolist()
     ynab_header_fields = generate_ynab_header_fields()
     print_sample_rows(df)
 
