@@ -1,4 +1,5 @@
 from pathlib import Path
+from sys import exit
 
 import click
 import pandas as pd
@@ -54,19 +55,30 @@ def read_field_mappings_from_yaml(file_path: Path) -> list[FieldMapping]:
     list of FieldMapping
         The list of FieldMapping instances read from the YAML file.
     """
+
+    mappings_dict = []
+    field_mappings = []
+
     try:
         # Read the YAML file into a list of dictionaries
         with Path.open(file_path, "r") as file:
             mappings_dict = yaml.safe_load(file)
     except yaml.YAMLError as e:
         click.secho(f"Error parsing YAML file: {e}", fg="red")
-        exit(1)
+        click.echo(f'Perhaps the file "{file_path}" is not a valid YAML file?')
+        click.echo()
     except Exception as e:
         click.secho(f"An unexpected error occurred: {e}", fg="red")
-        exit(1)
 
     # Convert the dictionaries to FieldMapping instances
-    return [FieldMapping(**mapping) for mapping in mappings_dict]
+    try:
+        field_mappings = [FieldMapping(**mapping) for mapping in mappings_dict]
+    except TypeError as e:
+        click.secho(f"Error reading mapping file: {e}", fg="red")
+        click.echo(f"Perhaps the saved mapping file {file_path} is corrupt?")
+        click.echo()
+
+    return field_mappings
 
 
 def read_csv_transaction_file(file_path: Path) -> pd.DataFrame:

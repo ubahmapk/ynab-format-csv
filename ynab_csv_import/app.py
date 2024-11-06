@@ -205,9 +205,13 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
     ynab_header_fields = generate_ynab_header_fields()
     print_sample_rows(df)
 
+    mapping = []
+
     if config_file:
         mapping = read_field_mappings_from_yaml(config_file)
-    else:
+
+    # If there's an error reading the YAML mapping, the resulting list will still be empty
+    if not mapping:
         mapping = map_csv_header_fields(ynab_header_fields, header_fields)
 
     print(f"Field mapping:")
