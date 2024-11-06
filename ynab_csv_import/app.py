@@ -7,13 +7,13 @@ import pandas as pd
 from loguru import logger
 
 from ynab_csv_import.__version__ import __version__
-
-
-@dataclass
-class FieldMapping:
-    ynab_field: str
-    csv_field: str | None = None
-    note: str = ""
+from ynab_csv_import.dataclasses import FieldMapping
+from ynab_csv_import.fileio import (
+    read_csv_transaction_file,
+    read_field_mappings_from_yaml,
+    write_dataframe_to_csv_file,
+    write_field_mappings_to_yaml,
+)
 
 
 def set_logging_level(verbosity: int) -> None:
@@ -35,18 +35,6 @@ def set_logging_level(verbosity: int) -> None:
     logger.add(stderr, level=log_level)
 
     return None
-
-
-def read_csv_transaction_file(file_path: Path) -> pd.DataFrame:
-    """Read the CSV transaction file and return a DataFrame"""
-
-    try:
-        df = pd.read_csv(file_path)
-    except IOError:
-        click.secho(f"Error reading file: {file_path}", fg="red")
-        exit(1)
-
-    return df
 
 
 def read_csv_header_fields(df: pd.DataFrame) -> list:
@@ -127,12 +115,26 @@ def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.
     return df[fields]
 
 
-def write_dataframe_to_csv_file(df: pd.DataFrame, file_path: Path) -> None:
-    """Write the DataFrame to a CSV file"""
+def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
+    """
+    Prompt the user to save the field mapping to a YAML file.
 
-    df.to_csv(file_path, float_format="%.2f", index=False)
-    print(f"Updated data written to {file_path}")
+    Parameters
+    ----------
+    field_mapping : list[FieldMapping]
+        A list of FieldMapping objects that represent the field mappings to be saved.
+
+    Returns
+    -------
+    None
+    """
+
     print()
+    save_mapping = click.confirm("Would you like to save this mapping to a file?", default=True)
+
+    if save_mapping:
+        file_path = click.prompt("Enter the path to save the mapping file", type=click.Path())
+        write_field_mappings_to_yaml(field_mapping, file_path)
 
     return None
 
@@ -145,11 +147,18 @@ def write_dataframe_to_csv_file(df: pd.DataFrame, file_path: Path) -> None:
     prompt="CSV file",
     help="CSV transaction file from your bank",
 )
+@click.option(
+    "-c",
+    "--config",
+    "config_file",
+    type=click.Path(exists=True, path_type=Path),
+    help="The path to the YAML file containing the field mappings",
+)
 @click.version_option(__version__, "-V", "--version")
 @click.option("-v", "--verbosity", help="Repeat for debug messaging", count=True)
 @click.help_option("-h", "--help")
 @click.command()
-def main(csv_file: Path, verbosity: int) -> None:
+def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
     """Main entry point for the script"""
 
     # Set the logging level
@@ -162,7 +171,11 @@ def main(csv_file: Path, verbosity: int) -> None:
     header_fields = read_csv_header_fields(df)
     ynab_header_fields = generate_ynab_header_fields()
     print_sample_rows(df)
-    mapping = map_csv_header_fields(ynab_header_fields, header_fields)
+
+    if config_file:
+        mapping = read_field_mappings_from_yaml(config_file)
+    else:
+        mapping = map_csv_header_fields(ynab_header_fields, header_fields)
 
     print(f"Field mapping:")
     for map in mapping:
@@ -173,5 +186,9 @@ def main(csv_file: Path, verbosity: int) -> None:
 
     # Write the updated DataFrame to a new CSV file
     write_dataframe_to_csv_file(updated_df, csv_file.with_suffix(".ynab.csv"))
+
+    # Prompt to save the field mapping to a YAML file
+    if not config_file:
+        prompt_to_save_mapping(mapping)
 
     return None
