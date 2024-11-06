@@ -67,3 +67,4 @@ lint.select = [
     "YTT", # Flake8-2020
 ]
 lint.ignore = ["RET501", "F541"]
+lint.exclude = ["ynab_csv_import/tests/"]
