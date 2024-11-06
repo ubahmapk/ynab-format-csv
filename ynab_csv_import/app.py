@@ -1,4 +1,3 @@
-from dataclasses import Field, dataclass
 from pathlib import Path
 from sys import stderr
 
@@ -17,7 +16,21 @@ from ynab_csv_import.fileio import (
 
 
 def set_logging_level(verbosity: int) -> None:
-    """Set the global logging level"""
+    """
+    Set the global logging level based on the verbosity level provided.
+
+    Parameters
+    ----------
+    verbosity : int
+        Verbosity level to set the logging level.
+        - 0 or None: ERROR level
+        - 1: INFO level
+        - >1: DEBUG level
+
+    Returns
+    -------
+    None
+    """
 
     # Default level
     log_level = "INFO"
@@ -68,8 +81,21 @@ def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
 
 
 def choose_field(field_name: str, csv_header_fields: list) -> str:
-    """Choose a field from the list of header fields"""
+    """
+    Choose a field from the list of header fields.
 
+    Parameters
+    ----------
+    field_name : str
+        The name of the YNAB field to map.
+    csv_header_fields : list
+        The list of header fields from the CSV file.
+
+    Returns
+    -------
+    str
+        The chosen field name from the CSV header fields, or "Skipped" if no field is chosen.
+    """
     response_field_name: str = "Skipped"
 
     print()
@@ -183,6 +209,9 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
     print()
 
     updated_df = filter_dataframe(df, mapping)
+
+    # Print sample of the updated dataframe
+    print_sample_rows(updated_df)
 
     # Write the updated DataFrame to a new CSV file
     write_dataframe_to_csv_file(updated_df, csv_file.with_suffix(".ynab.csv"))
