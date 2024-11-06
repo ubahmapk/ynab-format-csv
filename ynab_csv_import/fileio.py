@@ -58,9 +58,6 @@ def read_field_mappings_from_yaml(file_path: Path) -> list[FieldMapping]:
         # Read the YAML file into a list of dictionaries
         with Path.open(file_path, "r") as file:
             mappings_dict = yaml.safe_load(file)
-    except FileNotFoundError:
-        click.secho(f"Error: File not found: {file_path}", fg="red")
-        exit(1)
     except yaml.YAMLError as e:
         click.secho(f"Error parsing YAML file: {e}", fg="red")
         exit(1)
