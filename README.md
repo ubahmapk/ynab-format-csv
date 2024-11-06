@@ -17,6 +17,31 @@ Options:
   -f, --file PATH    CSV transaction file from your bank
 ```
 
+## Sample (Partial) Run
+
+```shell
+ynab-csv-import -f bank-transaction-export-file.csv
+
+Sample of the first 5 rows in the CSV file:
+Trans. Date  Post Date         Description  Amount       Category
+ 10/01/2024 10/01/2024       GROCERY STORE   50.00      Groceries
+ 10/02/2024 10/02/2024         COFFEE SHOP    5.00    Restaurants
+ 10/03/2024 10/03/2024         GAS STATION   40.00 Transportation
+ 10/04/2024 10/04/2024 ONLINE SUBSCRIPTION   12.99  Entertainment
+ 10/05/2024 10/05/2024          RESTAURANT   30.00    Restaurants
+
+Which field should be used as the Date field?
+
+0. Skip Date field
+1. Trans. Date
+2. Post Date
+3. Description
+4. Amount
+5. Category
+
+:
+```
+
 ## Data Format
 
 File format information is taken from YNAB's [online documentation for CSV import files](https://support.ynab.com/en_us/formatting-a-csv-file-an-overview-BJvczkuRq#texteditor).
