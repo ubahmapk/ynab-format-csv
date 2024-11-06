@@ -1,5 +1,5 @@
 from pathlib import Path
-from sys import stderr
+from sys import exit, stderr
 
 import click
 import pandas as pd
@@ -137,8 +137,15 @@ def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.
 
     # Rename the columns based on the field mapping
     df.rename(columns=mapping_dict, inplace=True)
+    try:
+        modified_df = df[fields]
+    except KeyError:
+        click.secho(f"Hmmm.... It looks like the saved mapping file does not match the transaction file.", fg="red")
+        click.echo(f"Please check that the correct files are being used.")
+        click.echo()
+        exit(1)
 
-    return df[fields]
+    return modified_df
 
 
 def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
