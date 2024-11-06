@@ -22,6 +22,7 @@ def write_field_mappings_to_yaml(field_mappings: list[FieldMapping], file_path: 
     -------
     None
     """
+
     # Convert FieldMapping instances to dictionaries
     mappings_dict = [field_mapping.__dict__ for field_mapping in field_mappings]
 
@@ -43,7 +44,7 @@ def write_field_mappings_to_yaml(field_mappings: list[FieldMapping], file_path: 
 
 def read_field_mappings_from_yaml(file_path: Path) -> list[FieldMapping]:
     """
-    Read field mappings from a YAML file.
+    Read previously saved field mappings from a YAML file.
 
     Parameters
     ----------
@@ -111,7 +112,20 @@ def read_csv_transaction_file(file_path: Path) -> pd.DataFrame:
 
 
 def write_dataframe_to_csv_file(df: pd.DataFrame, file_path: Path) -> None:
-    """Write the DataFrame to a CSV file"""
+    """
+    Write the DataFrame to a CSV file.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The DataFrame to be written to the CSV file.
+    file_path : Path
+        The path where the CSV file will be saved.
+
+    Returns
+    -------
+    None
+    """
 
     df.to_csv(file_path, float_format="%.2f", index=False)
     print(f"Updated data written to {file_path}")

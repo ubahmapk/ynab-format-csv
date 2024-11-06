@@ -51,13 +51,35 @@ def set_logging_level(verbosity: int) -> None:
 
 
 def read_csv_header_fields(df: pd.DataFrame) -> list:
-    """Read the header fields from the CSV file"""
+    """
+    Read the header fields from the CSV file.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The CSV file contents as a DataFrame.
+
+    Returns
+    -------
+    list
+        A list of column names from the DataFrame.
+    """
 
     return df.columns.tolist()
 
 
 def generate_ynab_header_fields() -> list[FieldMapping]:
-    """Generate the list of YNAB header fields"""
+    """
+    Generate and return the list of YNAB header fields.
+
+    Available fields taken from YNAB documentation:
+    https://support.ynab.com/en_us/formatting-a-csv-file-an-overview-BJvczkuRq#texteditor
+
+    Returns
+    -------
+    list of FieldMapping
+        A list of FieldMapping objects representing the YNAB header fields.
+    """
 
     return [
         FieldMapping(ynab_field="Date"),
@@ -70,7 +92,20 @@ def generate_ynab_header_fields() -> list[FieldMapping]:
 
 
 def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
-    """Print a sample of the rows in the DataFrame"""
+    """
+    Print a sample of the rows from the CSV file, to help the user see what the data looks like.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The DataFrame containing the CSV file data.
+    num_rows : int, optional
+        The number of rows to display from the DataFrame (default is 5).
+
+    Returns
+    -------
+    None
+    """
 
     click.echo()
     click.echo(f"Sample of the first {num_rows} rows in the CSV file:")
@@ -120,7 +155,21 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
 
 
 def map_csv_header_fields(ynab_header_fields: list[FieldMapping], csv_header_fields: list[str]) -> list[FieldMapping]:
-    """Map the header fields to the YNAB fields"""
+    """
+    Map the header fields to the YNAB fields.
+
+    Parameters
+    ----------
+    ynab_header_fields : list[FieldMapping]
+        A list of FieldMapping objects representing the YNAB header fields.
+    csv_header_fields : list[str]
+        A list of strings representing the CSV header fields.
+
+    Returns
+    -------
+    list[FieldMapping]
+        A list of FieldMapping objects with the CSV fields mapped to the YNAB fields.
+    """
 
     for field in ynab_header_fields:
         field.csv_field = choose_field(field.ynab_field, csv_header_fields)
@@ -129,7 +178,26 @@ def map_csv_header_fields(ynab_header_fields: list[FieldMapping], csv_header_fie
 
 
 def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.DataFrame:
-    """Filter the DataFrame to only include the mapped fields, and properly renamed."""
+    """
+    Filter the transaction entries to only include the mapped fields, and properly renamed.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The CSV transaction data as a DataFrame.
+    field_mapping : list[FieldMapping]
+        A list of FieldMapping objects that define the mapping between CSV fields and YNAB fields.
+
+    Returns
+    -------
+    pd.DataFrame
+        The filtered and renamed CSV transaction data as a DataFrame.
+
+    Raises
+    ------
+    KeyError
+        The saved mapping file does not match the transaction file.
+    """
 
     fields = [field.ynab_field for field in field_mapping if (field.csv_field and field.csv_field.lower() != "skipped")]
 
@@ -185,20 +253,20 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
     "--config",
     "config_file",
     type=click.Path(exists=True, path_type=Path),
-    help="The path to the YAML file containing the field mappings",
+    help="The path to the YAML file with saved field mappings",
 )
 @click.version_option(__version__, "-V", "--version")
 @click.option("-v", "--verbosity", help="Repeat for debug messaging", count=True)
 @click.help_option("-h", "--help")
 @click.command()
 def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
-    """Main entry point for the script"""
+    """Python script to prepare a CSV transaction file for import into YNAB"""
 
     # Set the logging level
     set_logging_level(verbosity)
 
     # Read the CSV file
-    df = read_csv_transaction_file(file_path=csv_file)
+    df = read_csv_transaction_file(csv_file)
 
     # Read the header fields
     header_fields = read_csv_header_fields(df)
