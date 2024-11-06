@@ -28,7 +28,7 @@ def write_field_mappings_to_yaml(field_mappings: list[FieldMapping], file_path: 
         # Write the list of dictionaries to a YAML file
         with Path.open(file_path, "w") as file:
             yaml.safe_dump(mappings_dict, file)
-    except IOError as e:
+    except OSError as e:
         click.secho(f"Error writing to file: {file_path}. {e}", fg="red")
         exit(1)
     except Exception as e:
@@ -69,9 +69,7 @@ def read_field_mappings_from_yaml(file_path: Path) -> list[FieldMapping]:
         exit(1)
 
     # Convert the dictionaries to FieldMapping instances
-    field_mappings = [FieldMapping(**mapping) for mapping in mappings_dict]
-
-    return field_mappings
+    return [FieldMapping(**mapping) for mapping in mappings_dict]
 
 
 def read_csv_transaction_file(file_path: Path) -> pd.DataFrame:
@@ -96,7 +94,7 @@ def read_csv_transaction_file(file_path: Path) -> pd.DataFrame:
 
     try:
         df = pd.read_csv(file_path)
-    except IOError:
+    except OSError:
         click.secho(f"Error reading file: {file_path}", fg="red")
         exit(1)
 
