@@ -4,7 +4,7 @@ Python script to prepare a CSV file for import into YNAB
 
 ## Usage
 
-```shell
+```
 Usage: ynab-csv-import [OPTIONS]
 
   Python script to prepare a CSV transaction file for import into YNAB
@@ -67,3 +67,7 @@ This format has one small variation—the amount is one field instead of two. Ou
 | ---------- | ------- | ---- | ------- |
 | 06/22/2021 | Payee 1 | Memo | -100.00 |
 | 06/22/2021 | Payee 2 | Memo |  500.00 |
+
+## Sample Transactions and Mappings
+
+Sample transaction and mapping files are located in the resources directory

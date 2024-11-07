@@ -1,0 +1,11 @@
+Account Number,Transaction Description,Transaction Date,Transaction Type,Transaction Amount,Balance
+0238,Purchase at Grocery Store,11/04/24,Debit,50.00,15000.00
+0238,Online Subscription Payment,11/04/24,Debit,15.00,15050.00
+0238,ATM Withdrawal,11/04/24,Debit,100.00,15065.00
+0238,Salary Deposit,11/04/24,Credit,2000.00,15165.00
+0238,Utility Bill Payment,11/04/24,Debit,75.00,17165.00
+0238,Restaurant Payment,11/04/24,Debit,45.00,17240.00
+0238,Online Shopping,11/04/24,Debit,120.00,17285.00
+0238,Transfer to Savings,11/04/24,Debit,500.00,17405.00
+0238,Refund from Store,11/04/24,Credit,30.00,17905.00
+0238,Gas Station Payment,11/04/24,Debit,40.00,17875.00

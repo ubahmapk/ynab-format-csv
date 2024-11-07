@@ -1,0 +1,18 @@
+- csv_field: Transaction Date
+  note: ''
+  ynab_field: Date
+- csv_field: Transaction Description
+  note: ''
+  ynab_field: Payee
+- csv_field: Skipped
+  note: ''
+  ynab_field: Memo
+- csv_field: Transaction Amount
+  note: A single field for both inflow and outflow
+  ynab_field: Amount
+- csv_field: Skipped
+  note: Used if separate fields are used for inflow and outflow
+  ynab_field: Outflow
+- csv_field: Skipped
+  note: Used if separate fields are used for inflow and outflow
+  ynab_field: Inflow
