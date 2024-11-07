@@ -5,16 +5,18 @@ Python script to format a CSV transaction file for import into YNAB
 ## Usage
 
 ```
-Usage: ynab-format-csv [OPTIONS]
+Usage: ynab-format-csv [OPTIONS] CSV_FILE
 
-  Python script to format a CSV transaction file for import into YNAB
+  Python script to prepare a CSV transaction file for import into YNAB.
+
+  This script accepts one argument, CSV_FILE, which should contain the
+  transaction data from your bank.
 
 Options:
   -h, --help         Show this message and exit.
   -v, --verbosity    Repeat for debug messaging
   -V, --version      Show the version and exit.
-  -c, --config PATH  The path to the YAML file containing the field mappings
-  -f, --file PATH    CSV transaction file from your bank
+  -c, --config PATH  The path to the YAML file with saved field mappings
 ```
 
 Output files are saved with the same name as the input file, but with a ".ynab.csv" extension.
