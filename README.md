@@ -17,6 +17,8 @@ Options:
   -f, --file PATH    CSV transaction file from your bank
 ```
 
+Output files are saved with the same name as the input file, but with a ".ynab.csv" extension.
+
 ## Sample (Partial) Run
 
 ```shell
@@ -41,8 +43,6 @@ Which field should be used as the Date field?
 
 :
 ```
-
-Output files are saved with the same name as the input file, but with a '.ynab.csv' extension.
 
 ## Data Format
 
