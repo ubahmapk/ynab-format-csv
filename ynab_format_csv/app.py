@@ -267,8 +267,8 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
         mapping = map_csv_header_fields(ynab_header_fields, header_fields)
 
     print(f"Field mapping:")
-    for map in mapping:
-        print(f"\t{map.ynab_field}\t<- {map.csv_field}")
+    for item in mapping:
+        print(f"\t{item.ynab_field}\t<- {item.csv_field}")
     print()
 
     updated_df: pd.DataFrame = filter_dataframe(df, mapping)
