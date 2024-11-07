@@ -33,7 +33,7 @@ def set_logging_level(verbosity: int) -> None:
     """
 
     # Default level
-    log_level = "INFO"
+    log_level: str = "INFO"
 
     if verbosity is not None:
         if verbosity == 1:
@@ -92,7 +92,6 @@ def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
     click.echo()
     click.echo(f"Sample of the first {num_rows} rows in the CSV file:")
     click.echo(df.head(num_rows).to_string(index=False))
-    click.echo()
 
     return None
 
@@ -118,13 +117,13 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
     print()
     while True:
         # Loop through the ynab_header_fields and select a header field from the CSV file to map
-        prompt_text = f"\nWhich field should be used as the {field_name} field?\n\n"
+        prompt_text: str = f"\nWhich field should be used as the {field_name} field?\n\n"
         prompt_text += f"0. Skip {field_name} field\n"
         for i, header_field in enumerate(csv_header_fields):
             prompt_text += f"{i+1}. {header_field}\n"
 
         prompt_text += "\n"
-        choice = click.prompt(prompt_text, type=int)
+        choice: int = click.prompt(prompt_text, type=int)
 
         if choice > len(csv_header_fields):
             print("Invalid selection. Try again.")
@@ -182,14 +181,16 @@ def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.
         The saved mapping file does not match the transaction file.
     """
 
-    fields = [field.ynab_field for field in field_mapping if (field.csv_field and field.csv_field.lower() != "skipped")]
+    fields: list[str] = [
+        field.ynab_field for field in field_mapping if (field.csv_field and field.csv_field.lower() != "skipped")
+    ]
 
-    mapping_dict = {field.csv_field: field.ynab_field for field in field_mapping}
+    mapping_dict: dict = {field.csv_field: field.ynab_field for field in field_mapping}
 
     # Rename the columns based on the field mapping
     df.rename(columns=mapping_dict, inplace=True)
     try:
-        modified_df = df[fields]
+        modified_df: pd.DataFrame = df[fields]
     except KeyError:
         click.secho(f"Hmmm.... It looks like the saved mapping file does not match the transaction file.", fg="red")
         click.echo(f"Please check that the correct files are being used.")
@@ -214,10 +215,10 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
     """
 
     print()
-    save_mapping = click.confirm("Would you like to save this mapping to a file?", default=True)
+    save_mapping: bool = click.confirm("Would you like to save this mapping to a file?", default=True)
 
     if save_mapping:
-        file_path = click.prompt("Enter the path to save the mapping file", type=click.Path())
+        file_path: Path = click.prompt("Enter the path to save the mapping file", type=click.Path())
         write_field_mappings_to_yaml(field_mapping, file_path)
 
     return None
@@ -249,14 +250,14 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
     set_logging_level(verbosity)
 
     # Read the CSV file
-    df = read_csv_transaction_file(csv_file)
+    df: pd.DataFrame = read_csv_transaction_file(csv_file)
 
     # Read the header fields
-    header_fields = df.columns.tolist()
-    ynab_header_fields = generate_ynab_header_fields()
+    header_fields: list[str] = df.columns.tolist()
+    ynab_header_fields: list[FieldMapping] = generate_ynab_header_fields()
     print_sample_rows(df)
 
-    mapping = []
+    mapping: list[FieldMapping] = []
 
     if config_file:
         mapping = read_field_mappings_from_yaml(config_file)
@@ -270,7 +271,7 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
         print(f"\t{map.ynab_field}\t<- {map.csv_field}")
     print()
 
-    updated_df = filter_dataframe(df, mapping)
+    updated_df: pd.DataFrame = filter_dataframe(df, mapping)
 
     # Print sample of the updated dataframe
     print_sample_rows(updated_df)

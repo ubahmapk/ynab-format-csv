@@ -16,7 +16,7 @@ def write_field_mappings_to_yaml(field_mappings: list[FieldMapping], file_path: 
     field_mappings : list[FieldMapping]
         The list of FieldMapping instances to write.
     file_path : Path
-        The path to the YAML file.
+        The file name (including optional path) of the YAML file to write.
 
     Returns
     -------
@@ -24,7 +24,7 @@ def write_field_mappings_to_yaml(field_mappings: list[FieldMapping], file_path: 
     """
 
     # Convert FieldMapping instances to dictionaries
-    mappings_dict = [field_mapping.__dict__ for field_mapping in field_mappings]
+    mappings_dict: list[dict[str, str]] = [field_mapping.__dict__ for field_mapping in field_mappings]
 
     try:
         # Write the list of dictionaries to a YAML file
@@ -57,8 +57,8 @@ def read_field_mappings_from_yaml(file_path: Path) -> list[FieldMapping]:
         The list of FieldMapping instances read from the YAML file.
     """
 
-    mappings_dict = []
-    field_mappings = []
+    mappings_dict: list[dict] = []
+    field_mappings: list[FieldMapping] = []
 
     try:
         # Read the YAML file into a list of dictionaries
@@ -103,7 +103,7 @@ def read_csv_transaction_file(file_path: Path) -> pd.DataFrame:
     """
 
     try:
-        df = pd.read_csv(file_path)
+        df: pd.DataFrame = pd.read_csv(file_path)
     except OSError:
         click.secho(f"Error reading file: {file_path}", fg="red")
         exit(1)
@@ -118,9 +118,9 @@ def write_dataframe_to_csv_file(df: pd.DataFrame, file_path: Path) -> None:
     Parameters
     ----------
     df : pd.DataFrame
-        The DataFrame to be written to the CSV file.
+        The DataFrame (of transactions) to be written to the CSV file.
     file_path : Path
-        The path where the CSV file will be saved.
+        The file name (and optional path) to write the CSV data to.
 
     Returns
     -------

@@ -15,12 +15,12 @@ class FieldMapping:
     ----------
     ynab_field : str
         The name of the field in YNAB.
-    csv_field : str or None, optional
-        The name of the corresponding field in the CSV file. Defaults to None.
+    csv_field : str, optional
+        The name of the corresponding field in the CSV file. Defaults to an empty string.
     note : str, optional
         An optional note about the field mapping. Defaults to an empty string.
     """
 
     ynab_field: str
-    csv_field: str | None = None
+    csv_field: str = ""
     note: str = ""
