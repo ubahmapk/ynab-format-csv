@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ynab-csv-import"
+name = "ynab-format-csv"
 version = "0.1.0"
 description = "Python script to prepare CSV files for import to YNAB"
 authors = ["Jon Mark Allen <ubahmapk@gmail.com>"]
@@ -8,7 +8,7 @@ readme = "README.md"
 
 
 [tool.poetry.scripts]
-ynab-csv-import = "ynab_csv_import.app:main"
+ynab-format-csv = "ynab_csv_import.app:main"
 
 [tool.poetry.dependencies]
 python = ">=3.12"

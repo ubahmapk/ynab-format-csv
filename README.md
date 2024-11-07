@@ -1,13 +1,13 @@
-# YNAB CSV Import
+# YNAB Format CSV
 
-Python script to prepare a CSV file for import into YNAB
+Python script to format a CSV transaction file for import into YNAB
 
 ## Usage
 
 ```
-Usage: ynab-csv-import [OPTIONS]
+Usage: ynab-format-csv [OPTIONS]
 
-  Python script to prepare a CSV transaction file for import into YNAB
+  Python script to format a CSV transaction file for import into YNAB
 
 Options:
   -h, --help         Show this message and exit.
@@ -20,7 +20,7 @@ Options:
 ## Sample (Partial) Run
 
 ```shell
-ynab-csv-import -f bank-transaction-export-file.csv
+ynab-format-csv -f bank-transaction-export-file.csv
 
 Sample of the first 5 rows in the CSV file:
 Trans. Date  Post Date         Description  Amount       Category
@@ -41,6 +41,8 @@ Which field should be used as the Date field?
 
 :
 ```
+
+Output files are saved with the same name as the input file, but with a '.ynab.csv' extension.
 
 ## Data Format
 

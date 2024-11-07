@@ -5,7 +5,7 @@ import click
 import pandas as pd
 import yaml
 
-from ynab_csv_import.dataclasses import FieldMapping
+from ynab_format_csv.dataclasses import FieldMapping
 
 
 def write_field_mappings_to_yaml(field_mappings: list[FieldMapping], file_path: Path) -> None:

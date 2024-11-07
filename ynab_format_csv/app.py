@@ -5,9 +5,9 @@ import click
 import pandas as pd
 from loguru import logger
 
-from ynab_csv_import.__version__ import __version__
-from ynab_csv_import.dataclasses import FieldMapping
-from ynab_csv_import.fileio import (
+from ynab_format_csv.__version__ import __version__
+from ynab_format_csv.dataclasses import FieldMapping
+from ynab_format_csv.fileio import (
     read_csv_transaction_file,
     read_field_mappings_from_yaml,
     write_dataframe_to_csv_file,

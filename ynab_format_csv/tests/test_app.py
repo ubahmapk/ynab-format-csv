@@ -2,7 +2,7 @@ import sys
 from contextlib import contextmanager
 from io import StringIO
 
-from ynab_csv_import.app import choose_field
+from ynab_format_csv.app import choose_field
 
 
 @contextmanager
