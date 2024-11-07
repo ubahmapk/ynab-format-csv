@@ -224,14 +224,7 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
     return None
 
 
-@click.option(
-    "-f",
-    "--file",
-    "csv_file",
-    type=click.Path(exists=True, path_type=Path),
-    prompt="CSV file",
-    help="CSV transaction file from your bank",
-)
+@click.argument("csv_file", type=click.Path(exists=True, path_type=Path))
 @click.option(
     "-c",
     "--config",
@@ -244,7 +237,10 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
 @click.help_option("-h", "--help")
 @click.command()
 def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
-    """Python script to prepare a CSV transaction file for import into YNAB"""
+    """Python script to prepare a CSV transaction file for import into YNAB.
+
+    This script accepts one argument, CSV_FILE, which should contain the transaction data from your bank.
+    """
 
     # Set the logging level
     set_logging_level(verbosity)
