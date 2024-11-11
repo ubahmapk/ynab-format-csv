@@ -111,7 +111,7 @@ def read_csv_transaction_file(file_path: Path) -> pd.DataFrame:
     return df
 
 
-def write_dataframe_to_csv_file(df: pd.DataFrame, file_path: Path) -> None:
+def write_dataframe_to_csv_file(df: pd.DataFrame, output_dir: Path, file_path: Path) -> None:
     """
     Write the DataFrame to a CSV file.
 
@@ -121,14 +121,20 @@ def write_dataframe_to_csv_file(df: pd.DataFrame, file_path: Path) -> None:
         The DataFrame (of transactions) to be written to the CSV file.
     file_path : Path
         The file name (and optional path) to write the CSV data to.
+    output_dir : Path
+        The directory to save the updated CSV file to.
 
     Returns
     -------
     None
     """
 
-    df.to_csv(file_path, float_format="%.2f", index=False)
-    print(f"Updated data written to {file_path}")
+    if not output_dir:
+        output_dir = Path.cwd()
+
+    full_path: Path = Path.joinpath(output_dir, file_path.name)
+    df.to_csv(full_path, float_format="%.2f", index=False)
+    print(f"Updated data written to {full_path}")
     print()
 
     return None
