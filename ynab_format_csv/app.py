@@ -92,6 +92,7 @@ def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
     click.echo()
     click.echo(f"Sample of the first {num_rows} rows in the CSV file:")
     click.echo(df.head(num_rows).to_string(index=False))
+    click.echo()
 
     return None
 
@@ -232,11 +233,18 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
     type=click.Path(exists=True, path_type=Path),
     help="The path to the YAML file with saved field mappings",
 )
+@click.option(
+    "-o",
+    "--outdir",
+    "output_dir",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False, path_type=Path, writable=True, allow_dash=False),
+    help="Directory to save the updated CSV file to",
+)
 @click.version_option(__version__, "-V", "--version")
 @click.option("-v", "--verbosity", help="Repeat for debug messaging", count=True)
 @click.help_option("-h", "--help")
 @click.command()
-def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
+def main(csv_file: Path, config_file: Path, output_dir: Path, verbosity: int) -> None:
     """Python script to prepare a CSV transaction file for import into YNAB.
 
     This script accepts one argument, CSV_FILE, which should contain the transaction data from your bank.
@@ -273,7 +281,7 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
     print_sample_rows(updated_df)
 
     # Write the updated DataFrame to a new CSV file
-    write_dataframe_to_csv_file(updated_df, csv_file.with_suffix(".ynab.csv"))
+    write_dataframe_to_csv_file(updated_df, output_dir, csv_file.with_suffix(".ynab.csv"))
 
     # Prompt to save the field mapping to a YAML file
     if not config_file:
