@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ynab-format-csv"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python script to prepare CSV files for import to YNAB"
 authors = ["Jon Mark Allen <ubahmapk@gmail.com>"]
 license = "MIT"
