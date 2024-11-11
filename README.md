@@ -13,13 +13,16 @@ Usage: ynab-format-csv [OPTIONS] CSV_FILE
   transaction data from your bank.
 
 Options:
-  -h, --help         Show this message and exit.
-  -v, --verbosity    Repeat for debug messaging
-  -V, --version      Show the version and exit.
-  -c, --config PATH  The path to the YAML file with saved field mappings
+  -h, --help              Show this message and exit.
+  -v, --verbosity         Repeat for debug messaging
+  -V, --version           Show the version and exit.
+  -o, --outdir DIRECTORY  Directory to save the updated CSV file to
+  -c, --config PATH       The path to the YAML file with saved field mappings
 ```
 
 Output files are saved with the same name as the input file, but with a ".ynab.csv" extension.
+The file is saved in the current working directory, unless a different directory is
+specified with the `-o/--outdir` option.
 
 ## Sample (Partial) Run
 
