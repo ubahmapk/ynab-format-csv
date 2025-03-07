@@ -57,7 +57,7 @@ YNAB requires one of two formats for the CSV import file.
 This format uses separate fields for outflows and inflows.
 
 | Date       | Payee   | Memo | Outflow | Inflow |
-| ---------- | ------- | ---- | ------- | ------ |
+|------------|---------|------|---------|--------|
 | 06/22/2021 | Payee 1 | Memo | 100.00  |        |
 | 06/23/2021 | Payee 2 | Memo |         | 500.00 |
 
@@ -68,9 +68,9 @@ Each field is separated by a comma, so it's important that every field is presen
 This format has one small variation—the amount is one field instead of two. Outflows are identified by a negative sign in the Amount field.
 
 | Date       | Payee   | Memo | Amount  |
-| ---------- | ------- | ---- | ------- |
+|------------|---------|------|---------|
 | 06/22/2021 | Payee 1 | Memo | -100.00 |
-| 06/22/2021 | Payee 2 | Memo |  500.00 |
+| 06/22/2021 | Payee 2 | Memo | 500.00  |
 
 ## Sample Transactions and Mappings
 
