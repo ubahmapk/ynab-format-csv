@@ -1,11 +1,15 @@
 # Project custom
 envfile
 local/
+*.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Ruff cache
+.ruff_cache
 
 # Distribution / packaging
 .Python
@@ -149,11 +153,5 @@ cython_debug/
 .idea/csv-editor.xml
 .idea/shelf/
 .idea/workspace.xml
-
-# VS Code
-.vscode
-
-# Zed
-.zed
 
 .DS_Store
