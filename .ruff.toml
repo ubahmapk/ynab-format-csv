@@ -1,0 +1,42 @@
+line-length = 120
+target-version = "py312"
+
+[lint.pydocstyle]
+convention = "numpy"
+ignore-decorators = ["property"]
+
+[lint]
+exclude = ["tests/**"]
+select = [
+    #"ANN", # Flake8-annotations
+    "D", # PyDocstyle
+    # D202 is enabled by default, when using the numpy convention
+    # Manually enable D211 and disable D202 below
+    "D211", # Docstring is missing a blank line after the summary
+    "E",    # Pycodestyle errors
+    "F",    # Pyflakes
+    "W",    # Pywicked
+    "B",    # Flake8-bugbear
+    "C4",   # Flake8-comprehensions
+    "I",    # Isort
+    "N",    # PEP8-Naming
+    "PGH",  # Flake8-pygments
+    "PTH",  # Flake8-pytest-helper
+    "Q",    # Flake8-quotes
+    "RET",  # Flake8-return
+    "RUF",  # Ruff-specific rules
+    "SIM",  # Flake8-simplify
+    "UP",   # Flake8-pyupgrade
+    "YTT",  # Flake8-2020
+]
+
+ignore = [
+    'D100',   # Missing docstring in public module
+    'D104',   # Missing docstring in public package
+    'D105',   # undocumented-magic-method
+    'D202',   # No blank line after function docstring
+    'PTH123', # open() should be replaced by Path.open()
+    'RET501', # Do not explicitly `return None` in function if it is the only possible return value
+    'RET504', # Unnecessary assignment to variable before `return` statement
+    # 'E501',   # Line too long
+]
