@@ -14,7 +14,6 @@ def replace_stdin(target):
 
 
 def test_choose_field() -> None:
-
     header_fields = ["Date", "Payee"]
     field_name = "Date"
 
