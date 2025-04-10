@@ -193,8 +193,8 @@ def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.
     try:
         modified_df: pd.DataFrame = df[fields]
     except KeyError:
-        click.secho(f"Hmmm.... It looks like the saved mapping file does not match the transaction file.", fg="red")
-        click.echo(f"Please check that the correct files are being used.")
+        click.secho("Hmmm.... It looks like the saved mapping file does not match the transaction file.", fg="red")
+        click.echo("Please check that the correct files are being used.")
         click.echo()
         exit(1)
 
@@ -270,7 +270,7 @@ def main(csv_file: Path, config_file: Path, output_dir: Path, verbosity: int) ->
     if not mapping:
         mapping = map_csv_header_fields(ynab_header_fields, header_fields)
 
-    print(f"Field mapping:")
+    print("Field mapping:")
     for item in mapping:
         print(f"\t{item.ynab_field}\t<- {item.csv_field}")
     print()
