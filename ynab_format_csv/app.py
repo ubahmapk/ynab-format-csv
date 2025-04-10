@@ -121,7 +121,7 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
         prompt_text: str = f"\nWhich field should be used as the {field_name} field?\n\n"
         prompt_text += f"0. Skip {field_name} field\n"
         for i, header_field in enumerate(csv_header_fields):
-            prompt_text += f"{i+1}. {header_field}\n"
+            prompt_text += f"{i + 1}. {header_field}\n"
 
         prompt_text += "\n"
         choice: int = click.prompt(prompt_text, type=int)
