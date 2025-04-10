@@ -1,0 +1,16 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "ignore": ["postings/**", "layers/**", "bruno/**", "tests/**"],
+  "stubPath": "typings",
+  "diagnosticMode": "workspace",
+  "strictListInference": false,
+  "strictDictionaryInference": true,
+  "strictSetInference": true,
+  "deprecateTypingAliases": true,
+  "enableReachabilityAnalysis": true,
+  "typeCheckingMode": "standard",
+  "reportMissingImports": "error",
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.12"
+}
