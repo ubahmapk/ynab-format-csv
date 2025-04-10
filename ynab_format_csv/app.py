@@ -54,23 +54,57 @@ def generate_ynab_header_fields() -> list[FieldMapping]:
     """
     Generate and return the list of YNAB header fields.
 
-    Available fields taken from YNAB documentation:
-    https://support.ynab.com/en_us/formatting-a-csv-file-an-overview-BJvczkuRq#texteditor
-
     Returns
     -------
     list of FieldMapping
         A list of FieldMapping objects representing the YNAB header fields.
+
+    Notes
+    -----
+    Available fields taken from YNAB documentation:
+    https://support.ynab.com/en_us/formatting-a-csv-file-an-overview-BJvczkuRq#texteditor
+
+    Prompts user for what **type** of transaction fields are present. e.g. Option 1 or Option 2
+    from YNAB's documentation
     """
 
-    return [
+    prompt_string: str = (
+        "Does the CSV file include both inflow and outflow columns, or only a single 'Amount' column?\n"
+    )
+    prompt_string += "1. Both 'Inflow' and 'Outflow' columns\n"
+    prompt_string += "2. Only a single 'Amount' column\n\n"
+    choice: int = int(click.prompt(prompt_string, type=click.Choice(["1", "2"])))
+
+    transaction_type_field: bool = False
+
+    if choice == 2:
+        prompt_string = "Does the CSV file include a 'Transaction Type' field,\n"
+        prompt_string += "which reports if the transaction is a deposit or withdrawal?\n"
+        transaction_type_field = click.confirm(prompt_string, default=False)
+
+    field_mapping_list: list[FieldMapping] = [
         FieldMapping(ynab_field="Date"),
         FieldMapping(ynab_field="Payee"),
         FieldMapping(ynab_field="Memo"),
-        FieldMapping(ynab_field="Amount", note="A single field for both inflow and outflow"),
-        FieldMapping(ynab_field="Outflow", note="Used if separate fields are used for inflow and outflow"),
-        FieldMapping(ynab_field="Inflow", note="Used if separate fields are used for inflow and outflow"),
     ]
+
+    if choice == 1:
+        field_mapping_list += [
+            FieldMapping(
+                ynab_field="Outflow",
+                note="Used if separate fields are used for inflow and outflow",
+            ),
+            FieldMapping(
+                ynab_field="Inflow",
+                note="Used if separate fields are used for inflow and outflow",
+            ),
+        ]
+    else:
+        field_mapping_list += [FieldMapping(ynab_field="Amount", note="A single field for both inflow and outflow")]
+        if transaction_type_field:
+            field_mapping_list += [FieldMapping(ynab_field="Transaction Type")]
+
+    return field_mapping_list
 
 
 def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
@@ -120,7 +154,7 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
         prompt_text: str = f"\nWhich field should be used as the {field_name} field?\n\n"
         prompt_text += f"0. Skip {field_name} field\n"
         for i, header_field in enumerate(csv_header_fields):
-            prompt_text += f"{i+1}. {header_field}\n"
+            prompt_text += f"{i + 1}. {header_field}\n"
 
         prompt_text += "\n"
         choice: int = click.prompt(prompt_text, type=int)
@@ -250,7 +284,6 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
 
     # Read the header fields
     header_fields: list[str] = df.columns.tolist()
-    ynab_header_fields: list[FieldMapping] = generate_ynab_header_fields()
     print_sample_rows(df)
 
     mapping: list[FieldMapping] = []
@@ -260,6 +293,7 @@ def main(csv_file: Path, config_file: Path, verbosity: int) -> None:
 
     # If there's an error reading the YAML mapping, the resulting list will still be empty
     if not mapping:
+        ynab_header_fields: list[FieldMapping] = generate_ynab_header_fields()
         mapping = map_csv_header_fields(ynab_header_fields, header_fields)
 
     print(f"Field mapping:")
