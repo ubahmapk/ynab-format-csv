@@ -61,8 +61,14 @@ def generate_ynab_header_fields() -> list[FieldMapping]:
 
     Returns
     -------
-    list of FieldMapping
-        A list of FieldMapping objects representing the YNAB header fields.
+    list[FieldMapping]
+        A list of FieldMapping objects representing the YNAB header fields with the following fields:
+        - Date
+        - Payee
+        - Memo
+        - Amount (single field for both inflow and outflow)
+        - Outflow (used if separate fields)
+        - Inflow (used if separate fields)
     """
 
     return [
@@ -84,11 +90,15 @@ def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
     df : pd.DataFrame
         The DataFrame containing the CSV file data.
     num_rows : int, optional
-        The number of rows to display from the DataFrame (default is 5).
+        The number of rows to display from the DataFrame, by default 5.
 
     Returns
     -------
     None
+
+    Notes
+    -----
+    The output is printed to stdout without the DataFrame index.
     """
 
     print()
@@ -101,7 +111,7 @@ def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
 
 def choose_field(field_name: str, csv_header_fields: list) -> str:
     """
-    Choose a field from the list of header fields.
+    Choose a field from the list of header fields through user interaction.
 
     Parameters
     ----------
@@ -114,6 +124,11 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
     -------
     str
         The chosen field name from the CSV header fields, or "Skipped" if no field is chosen.
+
+    Notes
+    -----
+    This function modifies the csv_header_fields list by removing the selected field
+    to prevent duplicate mappings.
     """
     response_field_name: str = "Skipped"
 
@@ -141,7 +156,7 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
 
 def map_csv_header_fields(ynab_header_fields: list[FieldMapping], csv_header_fields: list[str]) -> list[FieldMapping]:
     """
-    Map the header fields to the YNAB fields.
+    Map the CSV header fields to the YNAB fields through user interaction.
 
     Parameters
     ----------
@@ -154,6 +169,7 @@ def map_csv_header_fields(ynab_header_fields: list[FieldMapping], csv_header_fie
     -------
     list[FieldMapping]
         A list of FieldMapping objects with the CSV fields mapped to the YNAB fields.
+        Each FieldMapping object will have its csv_field attribute updated based on user selection.
     """
 
     for field in ynab_header_fields:
@@ -164,7 +180,7 @@ def map_csv_header_fields(ynab_header_fields: list[FieldMapping], csv_header_fie
 
 def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.DataFrame:
     """
-    Filter the transaction entries to only include the mapped fields, and properly renamed.
+    Filter and rename the transaction entries based on the field mapping.
 
     Parameters
     ----------
@@ -181,7 +197,7 @@ def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.
     Raises
     ------
     KeyError
-        The saved mapping file does not match the transaction file.
+        If the saved mapping file does not match the transaction file structure.
     """
 
     fields: list[str] = [
@@ -215,6 +231,11 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
     Returns
     -------
     None
+
+    Notes
+    -----
+    If the user chooses to save the mapping, they will be prompted for a file path
+    and the mapping will be saved in YAML format.
     """
 
     print()
@@ -229,7 +250,7 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
 
 def version_callback(value: bool) -> None:
     """
-    Print the version of the drawnames package and exit.
+    Print the version of the package and exit.
 
     Parameters
     ----------
@@ -239,6 +260,11 @@ def version_callback(value: bool) -> None:
     Returns
     -------
     None
+
+    Raises
+    ------
+    typer.Exit
+        When the version is printed, the application exits with code 0.
     """
 
     if value:
@@ -285,9 +311,34 @@ def main(
         ),
     ] = False,
 ) -> None:
-    """Python script to prepare a CSV transaction file for import into YNAB.
+    """
+    Prepare a CSV transaction file for import into YNAB.
 
-    This script accepts one argument, CSV_FILE, which should contain the transaction data from your bank.
+    Parameters
+    ----------
+    csv_file : Path
+        Path to the CSV file containing bank transaction data.
+    config_file : Path, optional
+        Path to a YAML file containing saved field mappings.
+    output_dir : Path, optional
+        Directory where the formatted CSV file should be saved.
+    verbosity : int, optional
+        Logging verbosity level (0=ERROR, 1=INFO, >1=DEBUG), by default 0.
+    version : bool, optional
+        If True, display version information and exit, by default False.
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    The script will:
+    1. Read the input CSV file
+    2. Either use provided field mappings or prompt for new ones
+    3. Filter and rename fields according to the mapping
+    4. Save the resulting file with '.ynab.csv' extension
+    5. Optionally save the field mapping for future use
     """
 
     # Set the logging level
