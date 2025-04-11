@@ -12,6 +12,7 @@ dependencies = [
     "click>=8.1.8",
     "loguru>=0.7.3",
     "pandas>=2.2.3",
+    "typer>=0.15.2",
 ]
 
 [project.urls]
@@ -34,7 +35,7 @@ dev = [
 ]
 
 [project.scripts]
-ynab-format-csv = "ynab_format_csv.app:main"
+ynab-format-csv = "ynab_format_csv.app:app"
 
 [build-system]
 requires = ["hatchling"]

@@ -1,9 +1,11 @@
 from pathlib import Path
 from sys import exit, stderr
+from typing import Annotated
 
-import click
 import pandas as pd
+import typer
 from loguru import logger
+from rich import print as rprint
 
 from ynab_format_csv.__version__ import __version__
 from ynab_format_csv.dataclasses import FieldMapping
@@ -89,10 +91,10 @@ def print_sample_rows(df: pd.DataFrame, num_rows: int = 5) -> None:
     None
     """
 
-    click.echo()
-    click.echo(f"Sample of the first {num_rows} rows in the CSV file:")
-    click.echo(df.head(num_rows).to_string(index=False))
-    click.echo()
+    print()
+    print(f"Sample of the first {num_rows} rows in the CSV file:")
+    print(df.head(num_rows).to_string(index=False))
+    print()
 
     return None
 
@@ -124,7 +126,7 @@ def choose_field(field_name: str, csv_header_fields: list) -> str:
             prompt_text += f"{i + 1}. {header_field}\n"
 
         prompt_text += "\n"
-        choice: int = click.prompt(prompt_text, type=int)
+        choice: int = typer.prompt(prompt_text, type=int)
 
         if choice > len(csv_header_fields):
             print("Invalid selection. Try again.")
@@ -193,9 +195,9 @@ def filter_dataframe(df: pd.DataFrame, field_mapping: list[FieldMapping]) -> pd.
     try:
         modified_df: pd.DataFrame = df[fields]
     except KeyError:
-        click.secho("Hmmm.... It looks like the saved mapping file does not match the transaction file.", fg="red")
-        click.echo("Please check that the correct files are being used.")
-        click.echo()
+        rprint("[red]Hmmm.... It looks like the saved mapping file does not match the transaction file.[/red]")
+        print("Please check that the correct files are being used.")
+        print()
         exit(1)
 
     return modified_df
@@ -216,35 +218,73 @@ def prompt_to_save_mapping(field_mapping: list[FieldMapping]) -> None:
     """
 
     print()
-    save_mapping: bool = click.confirm("Would you like to save this mapping to a file?", default=True)
+    save_mapping: bool = typer.confirm("Would you like to save this mapping to a file?", default=True)
 
     if save_mapping:
-        file_path: Path = click.prompt("Enter the path to save the mapping file", type=click.Path())
+        file_path: Path = typer.prompt("Enter the path to save the mapping file", type=Path)
         write_field_mappings_to_yaml(field_mapping, file_path)
 
     return None
 
 
-@click.argument("csv_file", type=click.Path(exists=True, path_type=Path))
-@click.option(
-    "-c",
-    "--config",
-    "config_file",
-    type=click.Path(exists=True, path_type=Path),
-    help="The path to the YAML file with saved field mappings",
-)
-@click.option(
-    "-o",
-    "--outdir",
-    "output_dir",
-    type=click.Path(exists=True, dir_okay=True, file_okay=False, path_type=Path, writable=True, allow_dash=False),
-    help="Directory to save the updated CSV file to",
-)
-@click.version_option(__version__, "-V", "--version")
-@click.option("-v", "--verbosity", help="Repeat for debug messaging", count=True)
-@click.help_option("-h", "--help")
-@click.command()
-def main(csv_file: Path, config_file: Path, output_dir: Path, verbosity: int) -> None:
+def version_callback(value: bool) -> None:
+    """
+    Print the version of the drawnames package and exit.
+
+    Parameters
+    ----------
+    value : bool
+        If True, print the version and exit.
+
+    Returns
+    -------
+    None
+    """
+
+    if value:
+        print(f"ynab-format-csv version {__version__}")
+
+        raise typer.Exit(0)
+
+    return None
+
+
+app = typer.Typer(add_completion=False, context_settings={"help_option_names": ["-h", "--help"]})
+
+
+@app.command()
+def main(
+    csv_file: Annotated[Path, typer.Argument(help="Input CSV File")],
+    config_file: Annotated[
+        Path,
+        typer.Option(
+            "-c",
+            "--config",
+            help="The path to the YAML file with saved field mappings",
+            file_okay=True,
+            dir_okay=False,
+            exists=True,
+        ),
+    ],
+    output_dir: Annotated[
+        Path,
+        typer.Option(
+            "-o", "--outdir", help="Directory in which to save the updated CSV file.", file_okay=False, dir_okay=True
+        ),
+    ],
+    verbosity: Annotated[int, typer.Option("-v", "--verbosity", help="Repeat for debug messaging", count=True)] = 0,
+    version: Annotated[
+        bool,
+        typer.Option(
+            "--version",
+            "-V",
+            callback=version_callback,
+            is_eager=True,
+            show_default=False,
+            help="Show the version and exit.",
+        ),
+    ] = False,
+) -> None:
     """Python script to prepare a CSV transaction file for import into YNAB.
 
     This script accepts one argument, CSV_FILE, which should contain the transaction data from your bank.
