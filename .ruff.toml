@@ -2,7 +2,7 @@ line-length = 120
 target-version = "py312"
 
 [lint.pydocstyle]
-convention = "numpy"
+convention = "google"
 ignore-decorators = ["property"]
 
 [lint]
